@@ -1,0 +1,45 @@
+{
+  "products": [
+    {
+      "sku": "GEN-BP-001",
+      "name": "Premium Brake Pads Set",
+      "description": "High-performance ceramic brake pads for superior stopping power and durability.",
+      "price": 4500,
+      "originalPrice": 5000,
+      "category": "Brake Systems",
+      "brand": "Genesil Pro",
+      "stockQuantity": 25,
+      "inStock": true,
+      "rating": 4.8,
+      "reviewCount": 124,
+      "featured": true,
+      "features": ["Ceramic compound", "Low dust", "Quiet operation"],
+      "tags": ["brake", "pads", "ceramic"],
+      "carModels": ["Toyota Corolla", "Honda Civic", "Nissan Sentra"],
+      "specifications": {
+        "Material": "Ceramic",
+        "Warranty": "2 years"
+      }
+    },
+    {
+      "sku": "GEN-OF-001",
+      "name": "Oil Filter - Universal",
+      "description": "Premium oil filter for engine protection and optimal performance.",
+      "price": 850,
+      "category": "Engine Parts",
+      "brand": "FilterMax",
+      "stockQuantity": 50,
+      "inStock": true,
+      "rating": 4.6,
+      "reviewCount": 89,
+      "featured": true,
+      "features": ["High filtration", "Long lasting", "Universal fit"],
+      "tags": ["oil", "filter", "engine"],
+      "carModels": ["Toyota Camry", "Honda Accord", "Nissan Altima"],
+      "specifications": {
+        "Type": "Spin-on",
+        "Thread": "3/4-16 UNF"
+      }
+    }
+  ]
+}

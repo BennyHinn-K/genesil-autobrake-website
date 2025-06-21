@@ -1,0 +1,3 @@
+sku,name,description,price,originalPrice,category,brand,stockQuantity,inStock,rating,reviewCount,featured,features,tags,carModels
+GEN-BP-001,Premium Brake Pads Set,High-performance ceramic brake pads for superior stopping power and durability.,4500,5000,Brake Systems,Genesil Pro,25,true,4.8,124,true,"Ceramic compound|Low dust|Quiet operation","brake|pads|ceramic","Toyota Corolla|Honda Civic|Nissan Sentra"
+GEN-OF-001,Oil Filter - Universal,Premium oil filter for engine protection and optimal performance.,850,,Engine Parts,FilterMax,50,true,4.6,89,true,"High filtration|Long lasting|Universal fit","oil|filter|engine","Toyota Camry|Honda Accord|Nissan Altima"

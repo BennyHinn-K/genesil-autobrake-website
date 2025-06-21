@@ -1,0 +1,16 @@
+sku,name,price,originalPrice,category,brand,description,rating,reviews,inStock
+GEN-BD-001,Premium Brake Disc Set,38999,45499,Brake Discs,Genesil Pro,High-performance ventilated brake discs for superior stopping power,4.8,124,true
+GEN-BP-002,Ceramic Brake Pads Premium,11699,14299,Brake Pads,Genesil Pro,Advanced ceramic brake pads with excellent heat dissipation,4.9,89,true
+GEN-BC-003,Complete Brake Caliper Kit,25999,32499,Brake Calipers,Genesil Elite,Complete caliper assembly with mounting hardware,4.7,156,true
+GEN-BF-004,DOT 4 Brake Fluid 1L,3249,3899,Fluids,Genesil,High-quality DOT 4 brake fluid for all vehicle types,4.6,78,true
+GEN-BR-005,Brake Rotor Performance Set,42999,49999,Brake Rotors,Genesil Performance,Slotted and drilled brake rotors for enhanced performance,4.9,203,true
+GEN-BH-006,Brake Hose Stainless Steel,8999,11499,Brake Lines,Genesil Pro,Stainless steel braided brake hoses for improved pedal feel,4.5,67,true
+GEN-BM-007,Brake Master Cylinder,18999,23999,Master Cylinders,Genesil Elite,High-quality brake master cylinder with reservoir,4.7,92,true
+GEN-BS-008,Brake Shoe Set Rear,7999,9999,Brake Shoes,Genesil,Complete rear brake shoe set with springs and hardware,4.4,45,true
+GEN-BK-009,Brake Repair Kit Complete,15999,19999,Repair Kits,Genesil Pro,Complete brake system repair kit with seals and gaskets,4.6,134,true
+GEN-BT-010,Brake Tool Set Professional,12999,16999,Tools,Genesil Tools,Professional brake service tool set with caliper tools,4.8,87,true
+GEN-AF-011,Air Filter High Performance,4999,6499,Filters,Genesil Air,High-flow air filter for improved engine performance,4.5,156,true
+GEN-OF-012,Oil Filter Premium,2999,3499,Filters,Genesil Oil,Premium oil filter with superior filtration technology,4.7,234,true
+GEN-FF-013,Fuel Filter Advanced,3999,4999,Filters,Genesil Fuel,Advanced fuel filter for clean fuel delivery,4.6,98,true
+GEN-SF-014,Spark Plug Set Platinum,8999,11999,Ignition,Genesil Ignition,Platinum spark plugs for enhanced ignition performance,4.8,167,true
+GEN-IC-015,Ignition Coil Pack,15999,19999,Ignition,Genesil Ignition,High-performance ignition coil pack for reliable starting,4.7,89,true
