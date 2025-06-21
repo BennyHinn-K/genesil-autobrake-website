@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import type { CartItem } from "@/types"
 
-interface CartContextType {
+export type CartContextType = {
   items: CartItem[]
   addItem: (item: CartItem) => void
   removeItem: (id: string) => void

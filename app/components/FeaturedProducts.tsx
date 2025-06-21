@@ -1,169 +1,89 @@
-"use client"
-
-import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, ShoppingCart, Star, AlertCircle } from "lucide-react"
 import Link from "next/link"
-import { useToast } from "@/hooks/use-toast"
 import type { Product } from "@/types"
-import { useCart } from "../context/CartContext"
+import { supabaseAdmin } from "@/lib/supabase"
+import { AddToCartButton, AddToCartIconButton } from "./AddToCartButton"
 
-export default function FeaturedProducts() {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [isFallback, setIsFallback] = useState(false)
-  const { toast } = useToast()
-  const { addToCart } = useCart()
 
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        // Add cache busting and timeout
-        const controller = new AbortController()
-        const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
-
-        const response = await fetch(`/api/products?featured=true&_=${Date.now()}`, {
-          signal: controller.signal,
-          headers: {
-            "Cache-Control": "no-cache",
-          },
-        })
-
-        clearTimeout(timeoutId)
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-
-        const data = await response.json()
-
-        if (data.success === false && data.fallback) {
-          setIsFallback(true)
-          toast({
-            title: "Using Cached Data",
-            description: "Database temporarily unavailable, showing cached products",
-            variant: "default",
-          })
-        }
-
-        setFeaturedProducts(Array.isArray(data.products) ? data.products : [])
-      } catch (error) {
-        console.error("Error fetching featured products:", error)
-        setError(error instanceof Error ? error.message : "Failed to load products")
-
-        // Set fallback products directly if API fails completely
-        const fallbackProducts = [
-          {
-            id: "1",
-            name: "Premium Brake Pads Set",
-            description: "High-performance ceramic brake pads for superior stopping power and durability.",
-            price: 4500,
-            originalPrice: 5000,
-            category: "Brake Systems",
-            brand: "Genesil Pro",
-            stock: 25,
-            stockQuantity: 25,
-            image: "/placeholder.svg?height=300&width=300",
-            rating: 4.8,
-            reviews: 124,
-            reviewCount: 124,
-            featured: true,
-            sku: "GEN-BP-001",
-            inStock: true,
-            features: ["Ceramic compound", "Low dust", "Quiet operation"],
-            tags: ["brake", "pads", "ceramic"],
-            carModels: ["Toyota Corolla", "Honda Civic", "Nissan Sentra"],
-            specifications: { Material: "Ceramic", Warranty: "2 years" },
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-          {
-            id: "2",
-            name: "Oil Filter - Universal",
-            description: "Premium oil filter for engine protection and optimal performance.",
-            price: 850,
-            category: "Engine Parts",
-            brand: "FilterMax",
-            stock: 50,
-            stockQuantity: 50,
-            image: "/placeholder.svg?height=300&width=300",
-            rating: 4.6,
-            reviews: 89,
-            reviewCount: 89,
-            featured: true,
-            sku: "GEN-OF-001",
-            inStock: true,
-            features: ["High filtration", "Long lasting", "Universal fit"],
-            tags: ["oil", "filter", "engine"],
-            carModels: ["Toyota Camry", "Honda Accord", "Nissan Altima"],
-            specifications: { Type: "Spin-on", Thread: "3/4-16 UNF" },
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        ]
-
-        setFeaturedProducts(fallbackProducts)
-        setIsFallback(true)
-
-        toast({
-          title: "Connection Error",
-          description: "Showing sample products. Please check your connection.",
-          variant: "destructive",
-        })
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchFeaturedProducts()
-
-    // Set up polling to check for product updates every 30 seconds
-    const intervalId = setInterval(fetchFeaturedProducts, 30000)
-
-    return () => clearInterval(intervalId)
-  }, [toast])
-
-  const handleAddToCart = (product: Product) => {
-    addToCart(product)
-    toast({
-      title: "Added to Cart",
-      description: `${product.name} has been added to your cart`,
-    })
+async function getFeaturedProducts(): Promise<{ products: Product[] | null, error: string | null }> {
+  if (!supabaseAdmin) {
+    const errorMessage = "Database connection is not configured correctly. Service key may be missing."
+    console.error(`CRITICAL: ${errorMessage}`)
+    return { products: null, error: errorMessage }
   }
 
-  if (loading) {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from("products")
+      .select("*")
+      .eq("featured", true)
+      .order("created_at", { ascending: false })
+      .limit(8)
+
+    if (error) {
+      console.error("Supabase error fetching featured products:", error)
+      return { products: null, error: `Database error: ${error.message}` }
+    }
+    
+    // Manually map to ensure all fields are correct, especially for CartItem
+    const products: Product[] = data.map((item: any) => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      price: item.price,
+      originalPrice: item.original_price,
+      category: item.category,
+      brand: item.brand,
+      stock: item.stock_quantity,
+      stockQuantity: item.stock_quantity,
+      image: item.image,
+      images: item.images,
+      rating: item.rating,
+      reviews: item.review_count,
+      reviewCount: item.review_count,
+      featured: item.featured,
+      sku: item.sku,
+      inStock: item.in_stock,
+      features: item.features,
+      tags: item.tags,
+      carModels: item.car_models,
+      specifications: item.specifications,
+      createdAt: item.created_at,
+      updatedAt: item.updated_at,
+    }))
+
+    return { products, error: null }
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "An unknown server error occurred."
+    console.error("Error in getFeaturedProducts:", errorMessage)
+    return { products: null, error: errorMessage }
+  }
+}
+
+
+export default async function FeaturedProducts() {
+  
+  const { products: featuredProducts, error } = await getFeaturedProducts();
+
+  if (error) {
     return (
-      <section className="py-12 bg-muted/30">
+       <section className="py-12 bg-red-50 dark:bg-red-900/10">
         <div className="container px-4 md:px-6">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Featured Products</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(4)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
-                <CardContent className="p-0">
-                  <div className="h-48 bg-muted rounded-t-lg" />
-                  <div className="p-4 space-y-3">
-                    <div className="h-4 bg-muted rounded w-3/4" />
-                    <div className="h-4 bg-muted rounded w-1/2" />
-                    <div className="h-6 bg-muted rounded w-1/3" />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="text-center py-8 bg-red-100 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+            <AlertCircle className="h-12 w-12 mx-auto text-red-500 mb-4" />
+            <h3 className="text-xl font-semibold mb-2 text-red-800 dark:text-red-200">Failed to Load Products</h3>
+            <p className="text-red-600 dark:text-red-300 max-w-md mx-auto">We couldn't retrieve the featured products from the database.</p>
+            <p className="text-xs text-red-500 mt-2 font-mono bg-red-50 dark:bg-red-900/30 p-2 rounded">{error}</p>
           </div>
         </div>
       </section>
     )
   }
 
-  if (featuredProducts.length === 0 && !loading) {
+  if (!featuredProducts || featuredProducts.length === 0) {
     return (
       <section className="py-12 bg-muted/30">
         <div className="container px-4 md:px-6">
@@ -172,7 +92,7 @@ export default function FeaturedProducts() {
           </div>
           <div className="text-center py-8">
             <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">No featured products available at the moment.</p>
+            <p className="text-muted-foreground">No featured products have been configured yet.</p>
           </div>
         </div>
       </section>
@@ -185,12 +105,6 @@ export default function FeaturedProducts() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h2 className="text-3xl font-bold">Featured Products</h2>
-            {isFallback && (
-              <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
-                <AlertCircle className="h-4 w-4" />
-                Showing cached data
-              </p>
-            )}
           </div>
           <Link href="/catalogue">
             <Button variant="link" className="gap-1">
@@ -200,51 +114,77 @@ export default function FeaturedProducts() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {featuredProducts.map((product) => (
-            <Card key={product.id} className="overflow-hidden transition-all hover:shadow-lg">
-              <CardContent className="p-0">
-                <Link href={`/catalogue/${product.id}`}>
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={product.image || "/placeholder.svg?height=300&width=300"}
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform hover:scale-105"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement
-                        target.src = "/placeholder.svg?height=300&width=300"
-                      }}
-                    />
-                    {product.featured && (
-                      <Badge className="absolute top-2 right-2 bg-yellow-500 text-black">Featured</Badge>
-                    )}
-                  </div>
-                </Link>
-                <div className="p-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Badge variant="outline">{product.category}</Badge>
-                    <div className="flex items-center">
-                      <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                      <span className="text-sm ml-1">{product.rating || 4.5}</span>
-                    </div>
-                  </div>
-                  <Link href={`/catalogue/${product.id}`}>
-                    <h3 className="font-semibold text-lg hover:text-yellow-600 transition-colors line-clamp-1">
-                      {product.name}
-                    </h3>
-                  </Link>
-                  <p className="text-muted-foreground text-sm line-clamp-2">{product.description}</p>
-                  <div className="flex items-center justify-between pt-2">
-                    <div className="font-bold">KES {product.price.toLocaleString()}</div>
-                    <Button
-                      size="sm"
-                      onClick={() => handleAddToCart(product)}
-                      disabled={!product.inStock}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-black"
-                    >
-                      <ShoppingCart className="h-4 w-4 mr-1" />
-                      {product.inStock ? "Add to Cart" : "Out of Stock"}
-                    </Button>
-                  </div>
+            <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 border-border bg-card">
+              <div className="relative overflow-hidden">
+                <div className="aspect-square bg-gray-100 dark:bg-gray-800">
+                  <img
+                    src={product.image || "/placeholder.svg?height=300&width=300"}
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      e.currentTarget.src = "/placeholder.svg?height=300&width=300"
+                    }}
+                  />
                 </div>
+                <div className="absolute top-2 left-2 flex flex-col gap-1">
+                  {product.featured && <Badge className="bg-yellow-500 text-black text-xs">Featured</Badge>}
+                  {!product.inStock && <Badge variant="destructive" className="text-xs">Out of Stock</Badge>}
+                  {product.originalPrice && product.originalPrice > product.price && (
+                    <Badge variant="secondary" className="text-xs">
+                      Save {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
+                    </Badge>
+                  )}
+                </div>
+                <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button size="sm" variant="secondary" className="h-8 w-8 p-0"><Star className="h-4 w-4" /></Button>
+                  <AddToCartIconButton product={product} />
+                </div>
+              </div>
+              <CardContent className="p-4 space-y-3">
+                {product.brand && <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{product.brand}</div>}
+                <h3 className="font-semibold text-foreground line-clamp-2 group-hover:text-yellow-600 transition-colors">{product.name}</h3>
+                <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
+                
+                {product.rating && product.rating > 0 && (
+                  <div className="flex items-center gap-2">
+                    <div className="flex">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <Star key={i} className={`h-4 w-4 ${i < Math.floor(product.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+                      ))}
+                    </div>
+                    <span className="text-sm text-muted-foreground">{product.rating} ({product.reviewCount || product.reviews || 0})</span>
+                  </div>
+                )}
+                
+                {product.carModels && product.carModels.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {product.carModels.slice(0, 2).map((model) => (
+                      <Badge key={model} variant="outline" className="text-xs">{model}</Badge>
+                    ))}
+                    {product.carModels.length > 2 && <Badge variant="outline" className="text-xs">+{product.carModels.length - 2} more</Badge>}
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold text-foreground">
+                    {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 0 }).format(product.price)}
+                  </span>
+                  {product.originalPrice && product.originalPrice > product.price && (
+                    <span className="text-sm text-muted-foreground line-through">
+                      {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 0 }).format(product.originalPrice)}
+                    </span>
+                  )}
+                </div>
+
+                <div className="text-sm">
+                  {product.inStock ? (
+                    <span className="text-green-600 dark:text-green-400">✓ In Stock {product.stockQuantity && `(${product.stockQuantity} available)`}</span>
+                  ) : (
+                    <span className="text-red-600 dark:text-red-400">✗ Out of Stock</span>
+                  )}
+                </div>
+
+                <AddToCartButton product={product} />
               </CardContent>
             </Card>
           ))}

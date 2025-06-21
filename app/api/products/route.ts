@@ -47,8 +47,13 @@ export async function GET(request: NextRequest) {
       .limit(isFeatured ? 8 : 50) // Limit featured products
 
     if (error) {
-      console.error("Supabase admin error:", error.message)
-      throw new Error(`Supabase error: ${error.message} (status: ${status})`)
+      console.error("Supabase admin error:", error)
+      return NextResponse.json({ 
+        success: false, 
+        error: "A database error occurred.", 
+        details: `DATABASE ERROR: ${error.message} (Code: ${error.code})`,
+        hint: error.hint
+      }, { status: 500 });
     }
 
     if (!data) {
