@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { promises as fs } from "fs"
 import path from "path"
-import { supabase } from "@/lib/supabase"
+import { supabaseAdmin } from "@/lib/supabase"
 import type { Product } from "@/types"
 
 const DATA_FILE = path.join(process.cwd(), "data", "products.json")
@@ -24,12 +24,19 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const isFeatured = searchParams.get("featured") === "true"
 
-  if (!supabase) {
-    return NextResponse.json({ success: false, error: "Database not configured" }, { status: 500 });
+  if (!supabaseAdmin) {
+    // This is a critical error. It means the service role key is missing on the server.
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: "CRITICAL: Server database connection is not configured. The SUPABASE_SERVICE_ROLE_KEY environment variable is missing." 
+      }, 
+      { status: 500 }
+    );
   }
 
   try {
-    let query = supabase.from("products").select("*")
+    let query = supabaseAdmin.from("products").select("*")
 
     if (isFeatured) {
       query = query.eq("featured", true)
@@ -40,7 +47,7 @@ export async function GET(request: NextRequest) {
       .limit(isFeatured ? 8 : 50) // Limit featured products
 
     if (error) {
-      console.error("Supabase error:", error.message)
+      console.error("Supabase admin error:", error.message)
       throw new Error(`Supabase error: ${error.message} (status: ${status})`)
     }
 
