@@ -2,7 +2,7 @@
 
 import Navbar from "./Navbar"
 import Hero from "./Hero"
-import FeaturedProducts from "./FeaturedProducts"
+// import FeaturedProducts from "./FeaturedProducts" // Temporarily disabled for diagnostics
 import Services from "./Services"
 import Footer from "./Footer"
 import ChatBot from "./ChatBot"
@@ -12,7 +12,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-white">
       <Navbar />
       <Hero />
-      <FeaturedProducts />
+      {/* <FeaturedProducts /> */}
       <Services />
       <Footer />
       <ChatBot />
