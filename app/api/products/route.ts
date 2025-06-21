@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { promises as fs } from "fs"
 import path from "path"
+import { supabase } from "@/lib/supabase"
+import type { Product } from "@/types"
 
 const DATA_FILE = path.join(process.cwd(), "data", "products.json")
 
@@ -17,22 +19,67 @@ async function writeProducts(products: any[]) {
   await fs.writeFile(DATA_FILE, JSON.stringify(products, null, 2), "utf-8")
 }
 
+// GET products with filtering for featured products
 export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const isFeatured = searchParams.get("featured") === "true"
+
+  if (!supabase) {
+    return NextResponse.json({ success: false, error: "Database not configured" }, { status: 500 });
+  }
+
   try {
-    const products = await readProducts()
-    return NextResponse.json({
-      products,
-      success: true,
-      count: products.length,
-      message: products.length === 0 ? "No products found" : "Products loaded successfully",
-    })
-  } catch (error) {
-    return NextResponse.json({
-      products: [],
-      success: false,
-      error: "Failed to load products",
-      message: error instanceof Error ? error.message : "Unknown error",
-    }, { status: 500 })
+    let query = supabase.from("products").select("*")
+
+    if (isFeatured) {
+      query = query.eq("featured", true)
+    }
+
+    const { data, error, status } = await query
+      .order("created_at", { ascending: false })
+      .limit(isFeatured ? 8 : 50) // Limit featured products
+
+    if (error) {
+      console.error("Supabase error:", error.message)
+      throw new Error(`Supabase error: ${error.message} (status: ${status})`)
+    }
+
+    if (!data) {
+      return NextResponse.json({ success: false, products: [], message: "No products found" }, { status: 404 })
+    }
+
+    // Map Supabase data to your application's Product type
+    const products: Product[] = data.map((item: any) => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      price: item.price,
+      originalPrice: item.original_price,
+      category: item.category,
+      brand: item.brand,
+      stock: item.stock_quantity,
+      stockQuantity: item.stock_quantity,
+      image: item.image,
+      images: item.images,
+      rating: item.rating,
+      reviews: item.review_count,
+      reviewCount: item.review_count,
+      featured: item.featured,
+      sku: item.sku,
+      inStock: item.in_stock,
+      features: item.features,
+      tags: item.tags,
+      carModels: item.car_models,
+      specifications: item.specifications,
+      createdAt: item.created_at,
+      updatedAt: item.updated_at,
+    }))
+
+    return NextResponse.json({ success: true, products })
+  } catch (err) {
+    console.error("API Error:", err)
+    const errorMessage = err instanceof Error ? err.message : "An unknown error occurred"
+    return NextResponse.json({ success: false, error: "Failed to fetch products", details: errorMessage }, { status: 500 })
   }
 }
 
