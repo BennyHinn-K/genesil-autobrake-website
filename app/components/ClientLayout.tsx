@@ -9,28 +9,30 @@ import { Toaster } from "@/components/ui/toaster"
 import SplashScreen from "./SplashScreen"
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
-  const [showSplash, setShowSplash] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    console.log("ClientLayout mounted. Starting splash screen timer.")
     const timer = setTimeout(() => {
-      setShowSplash(false)
-    }, 3000)
+      console.log("Splash screen timer finished. Setting isLoading to false.")
+      setIsLoading(false)
+    }, 2000) // Reduced to 2 seconds
 
     return () => clearTimeout(timer)
   }, [])
-
-  if (showSplash) {
-    return <SplashScreen />
-  }
 
   return (
     <ThemeProvider>
       <AuthProvider>
         <CartProvider>
-          <div className="min-h-screen bg-background text-foreground">
-            {children}
-            <Toaster />
-          </div>
+          {isLoading ? (
+            <SplashScreen />
+          ) : (
+            <div className="min-h-screen bg-background text-foreground">
+              {children}
+              <Toaster />
+            </div>
+          )}
         </CartProvider>
       </AuthProvider>
     </ThemeProvider>
