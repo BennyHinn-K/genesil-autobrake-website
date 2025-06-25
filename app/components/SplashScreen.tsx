@@ -36,7 +36,7 @@ export default function SplashScreen() {
     >
       {/* Genesil Logo - Centered */}
       <div className="mb-8">
-        <img src="/images/genesil-splash-logo.png" alt="Genesil Autospares" className="w-80 h-auto drop-shadow-2xl" />
+        <img src="/images/genesil-splash-logo.png" alt="Genesil Autospares" className="w-80 h-auto drop-shadow-2xl" width={320} height={128} />
       </div>
 
       {/* Loading Text - Just below logo */}

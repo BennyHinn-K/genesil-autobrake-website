@@ -11,7 +11,7 @@ export default function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <img src="/images/genesil-logo.png" alt="Genesil Autospares" className="logo-image brightness-0 invert" />
+              <img src="/images/genesil-logo.png" alt="Genesil Autospares" className="logo-image brightness-0 invert" width={120} height={40} />
               <div>
                 <h3 className="text-lg font-bold">GENESIL</h3>
                 <p className="text-sm text-gray-400">AUTOSPARES & ACCESSORIES</p>

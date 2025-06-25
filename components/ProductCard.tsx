@@ -36,6 +36,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         price: product.price,
         quantity: 1,
         image: product.image,
+        sku: product.sku,
+        product: product,
       })
 
       toast({

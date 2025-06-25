@@ -121,6 +121,9 @@ export default function ProductManager() {
         setSelectedProduct(null)
         await fetchProducts() // Refresh products
       } else {
+        // Enhanced error logging
+        let errorText = await response.text();
+        console.error("Failed to save product. Status:", response.status, "Body:", errorText);
         throw new Error("Failed to save product")
       }
     } catch (error) {

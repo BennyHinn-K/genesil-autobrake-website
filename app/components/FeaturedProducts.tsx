@@ -4,19 +4,19 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, ShoppingCart, Star, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import type { Product } from "@/types"
-import { supabaseAdmin } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase"
 import { AddToCartButton, AddToCartIconButton } from "./AddToCartButton"
 
 
 async function getFeaturedProducts(): Promise<{ products: Product[] | null, error: string | null }> {
-  if (!supabaseAdmin) {
-    const errorMessage = "Database connection is not configured correctly. Service key may be missing."
+  if (!supabase) {
+    const errorMessage = "Database connection is not configured correctly."
     console.error(`CRITICAL: ${errorMessage}`)
     return { products: null, error: errorMessage }
   }
 
   try {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from("products")
       .select("*")
       .eq("featured", true)
@@ -121,9 +121,6 @@ export default async function FeaturedProducts() {
                     src={product.image || "/placeholder.svg?height=300&width=300"}
                     alt={product.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    onError={(e) => {
-                      e.currentTarget.src = "/placeholder.svg?height=300&width=300"
-                    }}
                   />
                 </div>
                 <div className="absolute top-2 left-2 flex flex-col gap-1">

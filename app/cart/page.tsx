@@ -16,24 +16,24 @@ export default function CartPage() {
   const copyPhoneNumber = () => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       navigator.clipboard
-        .writeText("0722683434")
+        .writeText("+254722683434")
         .then(() => {
           toast({
             title: "Phone number copied!",
-            description: "0722683434 has been copied to your clipboard",
+            description: "+254 722 683 434 has been copied to your clipboard",
           })
         })
         .catch(() => {
           toast({
             title: "Copy failed",
-            description: "Please manually copy: 0722683434",
+            description: "Please manually copy: +254 722 683 434",
             variant: "destructive",
           })
         })
     } else {
       toast({
         title: "Phone number",
-        description: "0722683434 - Please copy manually",
+        description: "+254 722 683 434 - Please copy manually",
       })
     }
   }
@@ -99,7 +99,7 @@ export default function CartPage() {
 
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-foreground">{item.name}</h3>
-                        <p className="text-sm text-muted-foreground">{item.category || "Auto Parts"}</p>
+                        <p className="text-sm text-muted-foreground">{item.product?.category || "Auto Parts"}</p>
                         <p className="text-2xl font-bold text-yellow-600">KES {item.price.toLocaleString()}</p>
                       </div>
 
@@ -187,7 +187,7 @@ export default function CartPage() {
                     <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-lg p-3 border">
                       <div>
                         <p className="text-sm text-muted-foreground">Pay to:</p>
-                        <p className="text-xl font-bold text-foreground">0722683434</p>
+                        <p className="text-xl font-bold text-foreground">+254 722 683 434</p>
                       </div>
                       <Button
                         variant="outline"
@@ -206,7 +206,7 @@ export default function CartPage() {
 
                   <div className="space-y-3">
                     <p className="text-sm text-muted-foreground">
-                      After payment, call or WhatsApp us at <strong>0722683434</strong> with:
+                      After payment, call or WhatsApp us at <strong>+254 722 683 434</strong> with:
                     </p>
                     <ul className="text-sm text-muted-foreground space-y-1 ml-4">
                       <li>• M-Pesa confirmation message</li>
@@ -223,12 +223,12 @@ export default function CartPage() {
                   className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
                   onClick={() => {
                     if (typeof window !== "undefined") {
-                      window.open("tel:0722683434")
+                      window.open("tel:+254722683434")
                     }
                   }}
                 >
                   <Phone className="h-4 w-4 mr-2" />
-                  Call 0722683434 to Order
+                  Call +254 722 683 434 to Order
                 </Button>
                 <Link href="/catalogue">
                   <Button

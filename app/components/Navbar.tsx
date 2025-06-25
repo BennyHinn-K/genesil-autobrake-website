@@ -143,6 +143,8 @@ export default function Navbar() {
                 src="/images/genesil-logo.png"
                 alt="Genesil Autospares"
                 className="h-10 w-auto transition-transform group-hover:scale-105"
+                width={120}
+                height={40}
               />
               <div className="hidden sm:block">
                 <h1 className="text-xl font-bold text-gray-900 dark:text-foreground group-hover:text-yellow-600 transition-colors">
@@ -249,7 +251,7 @@ export default function Navbar() {
                 <SheetContent className="p-0 bg-white dark:bg-card w-80">
                   <div className="flex flex-col p-6 space-y-6">
                     <div className="flex items-center space-x-3 pb-4 border-b border-gray-200 dark:border-gray-700">
-                      <img src="/images/genesil-logo.png" alt="Genesil" className="h-8 w-auto" />
+                      <img src="/images/genesil-logo.png" alt="Genesil" className="h-8 w-auto" width={96} height={32} />
                       <div>
                         <h2 className="font-bold text-gray-900 dark:text-foreground">GENESIL</h2>
                         <p className="text-xs text-gray-600 dark:text-muted-foreground">AUTOBRAKE</p>

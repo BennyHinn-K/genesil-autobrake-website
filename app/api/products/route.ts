@@ -96,22 +96,78 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "CRITICAL: Server database connection is not configured." }, { status: 500 })
+  }
   try {
     const productData = await request.json()
     if (!productData.name || !productData.price) {
       return NextResponse.json({ error: "Product name and price are required" }, { status: 400 })
     }
-    const products = await readProducts()
-    const newProduct = {
-      ...productData,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+
+    // Prepare insert object for Supabase
+    const insertData = {
+      sku: productData.sku,
+      name: productData.name,
+      description: productData.description || null,
+      price: productData.price,
+      original_price: productData.originalPrice || null,
+      category: productData.category,
+      brand: productData.brand || null,
+      image: productData.image || null,
+      images: productData.images || null,
+      stock_quantity: productData.stockQuantity ?? productData.stock ?? 0,
+      rating: productData.rating || 0,
+      review_count: productData.reviewCount || productData.reviews || 0,
+      features: productData.features || null,
+      specifications: productData.specifications || null,
+      tags: productData.tags || null,
+      car_models: productData.carModels || null,
+      in_stock: productData.inStock ?? true,
+      featured: productData.featured ?? false,
     }
-    products.unshift(newProduct)
-    await writeProducts(products)
+
+    const { data, error } = await supabaseAdmin
+      .from("products")
+      .insert([insertData])
+      .select("*")
+      .single()
+
+    if (error || !data) {
+      console.error("Supabase error creating product:", error)
+      return NextResponse.json({ error: "Failed to create product", details: error?.message }, { status: 500 })
+    }
+
+    // Map to Product type
+    const newProduct: Product = {
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      originalPrice: data.original_price,
+      category: data.category,
+      brand: data.brand,
+      stock: data.stock_quantity,
+      stockQuantity: data.stock_quantity,
+      image: data.image,
+      images: data.images,
+      rating: data.rating,
+      reviews: data.review_count,
+      reviewCount: data.review_count,
+      featured: data.featured,
+      sku: data.sku,
+      inStock: data.in_stock,
+      features: data.features,
+      tags: data.tags,
+      carModels: data.car_models,
+      specifications: data.specifications,
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    }
+
     return NextResponse.json(newProduct)
   } catch (error) {
-    return NextResponse.json({ error: "Failed to add product" }, { status: 500 })
+    console.error("API Error (POST /api/products):", error)
+    return NextResponse.json({ error: "Failed to add product", details: error instanceof Error ? error.message : String(error) }, { status: 500 })
   }
 }

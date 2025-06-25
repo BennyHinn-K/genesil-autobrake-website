@@ -1,68 +1,112 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { promises as fs } from "fs"
-import path from "path"
+import { supabaseAdmin } from "@/lib/supabase"
+import type { Product } from "@/types"
 
-const DATA_FILE = path.join(process.cwd(), "data", "products.json")
-
-async function readProducts() {
-  try {
-    const data = await fs.readFile(DATA_FILE, "utf-8")
-    return JSON.parse(data)
-  } catch {
-    return []
+// Helper to map Supabase row to Product type
+function mapProduct(item: any): Product {
+  return {
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    price: item.price,
+    originalPrice: item.original_price,
+    category: item.category,
+    brand: item.brand,
+    stock: item.stock_quantity,
+    stockQuantity: item.stock_quantity,
+    image: item.image,
+    images: item.images,
+    rating: item.rating,
+    reviews: item.review_count,
+    reviewCount: item.review_count,
+    featured: item.featured,
+    sku: item.sku,
+    inStock: item.in_stock,
+    features: item.features,
+    tags: item.tags,
+    carModels: item.car_models,
+    specifications: item.specifications,
+    createdAt: item.created_at,
+    updatedAt: item.updated_at,
   }
 }
 
-async function writeProducts(products: any[]) {
-  await fs.writeFile(DATA_FILE, JSON.stringify(products, null, 2), "utf-8")
-}
-
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "CRITICAL: Server database connection is not configured." }, { status: 500 })
+  }
   try {
-    const id = params.id
-    const products = await readProducts()
-    const product = products.find((p: any) => p.id === id)
-    if (!product) {
+    const { data, error } = await supabaseAdmin
+      .from("products")
+      .select("*")
+      .eq("id", params.id)
+      .single()
+    if (error || !data) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 })
     }
-    return NextResponse.json(product)
+    return NextResponse.json(mapProduct(data))
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch product" }, { status: 500 })
   }
 }
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "CRITICAL: Server database connection is not configured." }, { status: 500 })
+  }
   try {
-    const id = params.id
     const updates = await request.json()
-    const products = await readProducts()
-    const idx = products.findIndex((p: any) => p.id === id)
-    if (idx === -1) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 })
+    // Map frontend fields to DB fields
+    const updateData = {
+      sku: updates.sku,
+      name: updates.name,
+      description: updates.description || null,
+      price: updates.price,
+      original_price: updates.originalPrice || null,
+      category: updates.category,
+      brand: updates.brand || null,
+      image: updates.image || null,
+      images: updates.images || null,
+      stock_quantity: updates.stockQuantity ?? updates.stock ?? 0,
+      rating: updates.rating || 0,
+      review_count: updates.reviewCount || updates.reviews || 0,
+      features: updates.features || null,
+      specifications: updates.specifications || null,
+      tags: updates.tags || null,
+      car_models: updates.carModels || null,
+      in_stock: updates.inStock ?? true,
+      featured: updates.featured ?? false,
+      updated_at: new Date().toISOString(),
     }
-    const updatedProduct = {
-      ...products[idx],
-      ...updates,
-      updatedAt: new Date().toISOString(),
+    const { data, error } = await supabaseAdmin
+      .from("products")
+      .update(updateData)
+      .eq("id", params.id)
+      .select("*")
+      .single()
+    if (error || !data) {
+      console.error("Supabase error updating product:", error)
+      return NextResponse.json({ error: "Product not found or failed to update", details: error?.message }, { status: 404 })
     }
-    products[idx] = updatedProduct
-    await writeProducts(products)
-    return NextResponse.json(updatedProduct)
+    return NextResponse.json(mapProduct(data))
   } catch (error) {
-    return NextResponse.json({ error: "Failed to update product" }, { status: 500 })
+    console.error("API Error (PUT /api/products/[id]):", error)
+    return NextResponse.json({ error: "Failed to update product", details: error instanceof Error ? error.message : String(error) }, { status: 500 })
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "CRITICAL: Server database connection is not configured." }, { status: 500 })
+  }
   try {
-    const id = params.id
-    let products = await readProducts()
-    const idx = products.findIndex((p: any) => p.id === id)
-    if (idx === -1) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 })
+    const { error } = await supabaseAdmin
+      .from("products")
+      .delete()
+      .eq("id", params.id)
+    if (error) {
+      return NextResponse.json({ error: "Product not found or failed to delete" }, { status: 404 })
     }
-    products.splice(idx, 1)
-    await writeProducts(products)
     return new NextResponse(null, { status: 204 })
   } catch (error) {
     return NextResponse.json({ error: "Failed to delete product" }, { status: 500 })

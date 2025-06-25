@@ -26,12 +26,12 @@ export default function CataloguePage() {
       if (!response.ok) throw new Error("Failed to fetch products")
 
       const data = await response.json()
-      const productList = data.products || []
+      const productList = (data.products || []) as Product[]
 
       setProducts(productList)
       setFilteredProducts(productList)
 
-      const uniqueCategories = Array.from(new Set(productList.map((p: Product) => p.category)))
+      const uniqueCategories = Array.from(new Set(productList.map((p) => p.category)))
       setCategories(uniqueCategories)
     } catch (error) {
       console.error("Error fetching products:", error)

@@ -53,7 +53,7 @@ export default function AuthPage() {
           name: "Administrator",
           email: "admin@genesil.co.ke",
           username: loginForm.username,
-          role: "admin",
+          role: "admin" as const,
         }
 
         await login(adminUser)
@@ -126,7 +126,7 @@ export default function AuthPage() {
         email: signupForm.email,
         username: signupForm.username,
         password: signupForm.password,
-        role: "user",
+        role: "user" as const,
       }
 
       users.push(newUser)
@@ -160,6 +160,8 @@ export default function AuthPage() {
             src="/images/genesil-logo.png"
             alt="Genesil Autospares"
             className="w-24 h-24 mx-auto mb-4 drop-shadow-lg"
+            width={96}
+            height={96}
           />
           <h1 className="text-3xl font-bold text-black mb-2">GENESIL</h1>
           <p className="text-black/80 font-medium">AUTOSPARES & ACCESSORIES LTD</p>

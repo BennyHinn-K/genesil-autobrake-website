@@ -32,9 +32,11 @@ export default function ProductCard({ product }: ProductCardProps) {
     try {
       addItem({
         id: product.id,
+        product,
         name: product.name,
         price: product.price,
         quantity: 1,
+        sku: product.sku,
         image: product.image,
       })
 
@@ -79,10 +81,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             src={product.image || "/placeholder.svg?height=300&width=300"}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement
-              target.src = "/placeholder.svg?height=300&width=300"
-            }}
           />
         </div>
 

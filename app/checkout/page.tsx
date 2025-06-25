@@ -73,7 +73,7 @@ const CheckoutPage = () => {
   return (
     <div className="container py-10 max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <img src="/images/genesil-logo.png" alt="Genesil Autospares" className="w-16 h-16 mx-auto mb-4" />
+        <img src="/images/genesil-logo.png" alt="Genesil Autospares" className="w-16 h-16 mx-auto mb-4" width={64} height={64} />
         <h1 className="text-3xl font-bold mb-2">Secure Checkout</h1>
         <p className="text-gray-600">
           Complete your order with Genesil Autospares - Kenya's trusted auto parts supplier
@@ -95,7 +95,7 @@ const CheckoutPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <a href="tel:+254722683434"><Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-3">
               <Phone className="h-4 w-4 mr-2" />
-              Call: 0722 683 434</Button></a>
+              Call: +254 722 683 434</Button></a>
             <Button
               onClick={handleWhatsAppOrder}
               variant="outline"
@@ -346,7 +346,7 @@ const CheckoutPage = () => {
                   ) : form.watch("paymentMethod") === "call" ? (
                     <>
                       <Phone className="h-5 w-5 mr-2" />
-                      <a href="tel:+254722683434" className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4">Call Now: 0722 683 434</a>
+                      <a href="tel:+254722683434" className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4">Call Now: +254 722 683 434</a>
                     </>
                   ) : (
                     "Complete Secure Payment"
