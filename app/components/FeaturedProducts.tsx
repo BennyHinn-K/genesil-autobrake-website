@@ -8,8 +8,8 @@ import { supabase } from "@/lib/supabase"
 import { AddToCartButton, AddToCartIconButton } from "./AddToCartButton"
 
 
-// Fetch 3 products from the database to feature
-async function getThreeFeaturedProducts(): Promise<{ products: Product[] | null, error: string | null }> {
+// Fetch featured products from the database
+async function getFeaturedProducts(): Promise<{ products: Product[] | null, error: string | null }> {
   if (!supabase) {
     const errorMessage = "Database connection is not configured correctly."
     console.error(`CRITICAL: ${errorMessage}`)
@@ -20,11 +20,12 @@ async function getThreeFeaturedProducts(): Promise<{ products: Product[] | null,
     const { data, error } = await supabase
       .from("products")
       .select("*")
+      .eq("featured", true)
       .order("created_at", { ascending: false })
-      .limit(3)
+      .limit(8)
 
     if (error) {
-      console.error("Supabase error fetching products:", error)
+      console.error("Supabase error fetching featured products:", error)
       return { products: null, error: `Database error: ${error.message}` }
     }
 
@@ -57,13 +58,13 @@ async function getThreeFeaturedProducts(): Promise<{ products: Product[] | null,
     return { products, error: null }
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "An unknown server error occurred."
-    console.error("Error in getThreeFeaturedProducts:", errorMessage)
+    console.error("Error in getFeaturedProducts:", errorMessage)
     return { products: null, error: errorMessage }
   }
 }
 
 export default async function FeaturedProducts() {
-  const { products: featuredProducts, error } = await getThreeFeaturedProducts();
+  const { products: featuredProducts, error } = await getFeaturedProducts();
 
   if (error) {
     return (
