@@ -47,8 +47,7 @@ export default function CataloguePage() {
 
   useEffect(() => {
     fetchProducts()
-    const intervalId = setInterval(fetchProducts, 10000) // Refresh every 10 seconds
-    return () => clearInterval(intervalId)
+    // Removed setInterval to prevent constant refreshing
   }, [])
 
   useEffect(() => {

@@ -11,13 +11,26 @@ export interface MpesaConfig {
 export function getMpesaConfig(): MpesaConfig {
   const environment = (process.env.MPESA_ENVIRONMENT as "sandbox" | "production") || "sandbox"
 
+  const consumerKey = process.env.MPESA_CONSUMER_KEY || ""
+  const consumerSecret = process.env.MPESA_CONSUMER_SECRET || ""
+  const businessShortCode = process.env.MPESA_BUSINESS_SHORT_CODE || ""
+  const passkey = process.env.MPESA_PASSKEY || ""
+  const callbackUrl = process.env.MPESA_CALLBACK_URL || ""
+
+  // Throw clear errors if any required variable is missing
+  if (!consumerKey) throw new Error("MPESA_CONSUMER_KEY is required but not set. Please add it to your Vercel project settings.")
+  if (!consumerSecret) throw new Error("MPESA_CONSUMER_SECRET is required but not set. Please add it to your Vercel project settings.")
+  if (!businessShortCode) throw new Error("MPESA_BUSINESS_SHORT_CODE is required but not set. Please add it to your Vercel project settings.")
+  if (!passkey) throw new Error("MPESA_PASSKEY is required but not set. Please add it to your Vercel project settings.")
+  if (!callbackUrl) throw new Error("MPESA_CALLBACK_URL is required but not set. Please add it to your Vercel project settings.")
+
   return {
     environment,
-    consumerKey: process.env.MPESA_CONSUMER_KEY || "",
-    consumerSecret: process.env.MPESA_CONSUMER_SECRET || "",
-    businessShortCode: process.env.MPESA_BUSINESS_SHORT_CODE || "",
-    passkey: process.env.MPESA_PASSKEY || "",
-    callbackUrl: process.env.MPESA_CALLBACK_URL || "",
+    consumerKey,
+    consumerSecret,
+    businessShortCode,
+    passkey,
+    callbackUrl,
     baseUrl: environment === "production" ? "https://api.safaricom.co.ke" : "https://sandbox.safaricom.co.ke",
   }
 }

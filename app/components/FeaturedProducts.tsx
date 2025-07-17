@@ -8,7 +8,8 @@ import { supabase } from "@/lib/supabase"
 import { AddToCartButton, AddToCartIconButton } from "./AddToCartButton"
 
 
-async function getFeaturedProducts(): Promise<{ products: Product[] | null, error: string | null }> {
+// Fetch 3 products from the database to feature
+async function getThreeFeaturedProducts(): Promise<{ products: Product[] | null, error: string | null }> {
   if (!supabase) {
     const errorMessage = "Database connection is not configured correctly."
     console.error(`CRITICAL: ${errorMessage}`)
@@ -19,16 +20,14 @@ async function getFeaturedProducts(): Promise<{ products: Product[] | null, erro
     const { data, error } = await supabase
       .from("products")
       .select("*")
-      .eq("featured", true)
       .order("created_at", { ascending: false })
-      .limit(8)
+      .limit(3)
 
     if (error) {
-      console.error("Supabase error fetching featured products:", error)
+      console.error("Supabase error fetching products:", error)
       return { products: null, error: `Database error: ${error.message}` }
     }
-    
-    // Manually map to ensure all fields are correct, especially for CartItem
+
     const products: Product[] = data.map((item: any) => ({
       id: item.id,
       name: item.name,
@@ -58,15 +57,13 @@ async function getFeaturedProducts(): Promise<{ products: Product[] | null, erro
     return { products, error: null }
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "An unknown server error occurred."
-    console.error("Error in getFeaturedProducts:", errorMessage)
+    console.error("Error in getThreeFeaturedProducts:", errorMessage)
     return { products: null, error: errorMessage }
   }
 }
 
-
 export default async function FeaturedProducts() {
-  
-  const { products: featuredProducts, error } = await getFeaturedProducts();
+  const { products: featuredProducts, error } = await getThreeFeaturedProducts();
 
   if (error) {
     return (

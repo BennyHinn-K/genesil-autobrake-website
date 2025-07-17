@@ -1,14 +1,22 @@
 import { createClient } from "@supabase/supabase-js"
 
 // Supabase configuration
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-// Validate required environment variables
-// console.warn("NEXT_PUBLIC_SUPABASE_URL is not set")
-
-// console.warn("NEXT_PUBLIC_SUPABASE_ANON_KEY is not set")
+if (!supabaseUrl) {
+  throw new Error("Environment variable NEXT_PUBLIC_SUPABASE_URL is required but not set. Please add it to your Vercel project settings.")
+}
+if (!supabaseAnonKey) {
+  throw new Error("Environment variable NEXT_PUBLIC_SUPABASE_ANON_KEY is required but not set. Please add it to your Vercel project settings.")
+}
+// Service key is only required for admin operations, so warn but don't throw
+if (typeof window === "undefined" && !supabaseServiceKey) {
+  // Only warn on the server
+  // eslint-disable-next-line no-console
+  console.warn("WARNING: SUPABASE_SERVICE_ROLE_KEY is not set. Admin features will not work.")
+}
 
 // Create the main Supabase client for client-side operations
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
