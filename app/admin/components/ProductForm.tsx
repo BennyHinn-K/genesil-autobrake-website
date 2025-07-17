@@ -50,6 +50,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
     specifications: {} as Record<string, string>,
     tags: [] as string[],
     carModels: [] as string[],
+    featured: false,
   })
 
   const categories = [
@@ -278,6 +279,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
         specifications: product.specifications || {},
         tags: product.tags || [],
         carModels: product.carModels || [],
+        featured: product.featured || false,
       })
       setImagePreview(product.image || "")
 
@@ -610,6 +612,15 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
                     />
                     <label className="text-sm font-medium text-foreground">In Stock</label>
                   </div>
+                </div>
+
+                {/* Mark as Featured Toggle */}
+                <div className="flex items-center space-x-2 pt-2">
+                  <Switch
+                    checked={formData.featured || false}
+                    onCheckedChange={(checked) => handleSwitchChange("featured", checked)}
+                  />
+                  <label className="text-sm font-medium text-yellow-600">Mark as Featured</label>
                 </div>
               </CardContent>
             </Card>

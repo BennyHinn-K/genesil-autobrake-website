@@ -39,17 +39,15 @@ class ProductSyncService {
       // TODO: Implement logAction method on productDB or remove this call if not needed.
       // await productDB.logAction("SYNC_START", undefined, undefined, `Starting sync from ${sourceFile}`, true)
 
-      // Get existing products from this source file
-      // TODO: Implement getProductsBySourceFile method on productDB or remove this call if not needed.
-      // const existingProducts = await productDB.getProductsBySourceFile(sourceFile)
-      const existingSkus = new Set()
-      const zipSkus = new Set(zipProducts.map((p) => p.sku))
+      // Get existing products from the database
+      const existingProducts = await productDB.getAllProducts();
+      const existingSkus = new Set(existingProducts.map((p) => p.sku));
+      const zipSkus = new Set(zipProducts.map((p) => p.sku));
 
       // Create or update products from ZIP
       for (const zipProduct of zipProducts) {
         try {
-          // TODO: Implement getProductsBySourceFile method on productDB or remove this call if not needed.
-          // const existingProduct = existingProducts.find((p) => p.sku === zipProduct.sku)
+          const existingProduct = existingProducts.find((p) => p.sku === zipProduct.sku);
 
           if (existingProduct) {
             // Update existing product
@@ -85,7 +83,9 @@ class ProductSyncService {
               inStock: zipProduct.inStock !== undefined ? zipProduct.inStock : true,
               sku: zipProduct.sku,
               sourceFile,
-            }
+              featured: false,
+              stockQuantity: 0,
+            };
 
             // TODO: Implement createProduct method on productDB or remove this call if not needed.
             // await productDB.createProduct(newProduct)

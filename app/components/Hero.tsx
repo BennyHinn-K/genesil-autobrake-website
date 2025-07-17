@@ -1,6 +1,10 @@
+"use client"
+/// <reference types="react" />
+import * as React from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ArrowRight, Shield, Wrench, Truck } from "lucide-react"
+import Image from "next/image"
 
 export default function Hero() {
   return (
@@ -73,10 +77,12 @@ export default function Hero() {
 
           <div className="relative animate-fade-in-up delay-300">
             <div className="bg-black/10 backdrop-blur-sm rounded-2xl p-8 border border-black/20">
-              <img
+              <Image
                 src="https://cdn.prod.website-files.com/683fea9d1284e637c9c1050b/683ffbd0820979343ffe4dc5_65d1acfb-27c5-483e-855f-acc465b1c52c.avif"
                 alt="Professional automotive spare parts and tools"
                 className="w-full h-80 object-cover rounded-lg"
+                width={800}
+                height={320}
               />
               <div className="mt-6 grid grid-cols-2 gap-4 text-center">
                 <div className="bg-black/10 rounded-lg p-4">

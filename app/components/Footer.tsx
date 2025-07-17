@@ -1,7 +1,9 @@
-"use client"
+/// <reference types="react" />
 
+import * as React from "react"
 import Link from "next/link"
 import { Facebook, Twitter, Instagram, Phone, Mail, MapPin, Clock } from "lucide-react"
+import Image from "next/image"
 
 export default function Footer() {
   return (
@@ -11,7 +13,7 @@ export default function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <img src="/images/genesil-logo.png" alt="Genesil Autospares" className="logo-image brightness-0 invert" width={120} height={40} />
+              <Image src="/images/genesil-logo.png" alt="Genesil Autospares" className="logo-image brightness-0 invert" width={120} height={40} />
               <div>
                 <h3 className="text-lg font-bold">GENESIL</h3>
                 <p className="text-sm text-gray-400">AUTOSPARES & ACCESSORIES</p>
@@ -121,9 +123,7 @@ export default function Footer() {
                 <MapPin className="h-5 w-5 text-yellow-400 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-gray-400 text-sm">
-                    Nairobi, Kenya
-                    <br />
-                    Industrial Area
+                    Kirinyaga Rd, Nairobi, Kenya
                   </p>
                 </div>
               </div>

@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
       tags: productData.tags || null,
       car_models: productData.carModels || null,
       in_stock: productData.inStock ?? true,
-      featured: productData.featured ?? false,
+      featured: true, // Always featured
     }
 
     const { data, error } = await supabaseAdmin

@@ -360,6 +360,9 @@ export default function ProductManager() {
                                     Out
                                   </UIBadge>
                                 )}
+                                {product.featured && (
+                                  <UIBadge className="bg-yellow-500 text-black ml-2">Featured</UIBadge>
+                                )}
                               </div>
                             </TableCell>
                             <TableCell>

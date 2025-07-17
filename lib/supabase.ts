@@ -6,13 +6,9 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 // Validate required environment variables
-if (!supabaseUrl) {
-  console.warn("NEXT_PUBLIC_SUPABASE_URL is not set")
-}
+// console.warn("NEXT_PUBLIC_SUPABASE_URL is not set")
 
-if (!supabaseAnonKey) {
-  console.warn("NEXT_PUBLIC_SUPABASE_ANON_KEY is not set")
-}
+// console.warn("NEXT_PUBLIC_SUPABASE_ANON_KEY is not set")
 
 // Create the main Supabase client for client-side operations
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)

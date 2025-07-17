@@ -75,7 +75,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       tags: updates.tags || null,
       car_models: updates.carModels || null,
       in_stock: updates.inStock ?? true,
-      featured: updates.featured ?? false,
+      featured: true, // Always featured
       updated_at: new Date().toISOString(),
     }
     const { data, error } = await supabaseAdmin

@@ -85,7 +85,7 @@ class MpesaService {
         TransactionDesc: request.transactionDesc,
       }
 
-      console.log("STK Push Payload:", JSON.stringify(stkPushPayload, null, 2))
+      // console.log("STK Push Payload:", JSON.stringify(stkPushPayload, null, 2))
 
       const response = await fetch(`${this.config.baseUrl}/mpesa/stkpush/v1/processrequest`, {
         method: "POST",
@@ -97,7 +97,7 @@ class MpesaService {
       })
 
       const responseData = await response.json()
-      console.log("STK Push Response:", JSON.stringify(responseData, null, 2))
+      // console.log("STK Push Response:", JSON.stringify(responseData, null, 2))
 
       if (!response.ok) {
         throw new Error(`STK Push failed: ${responseData.errorMessage || response.statusText}`)
@@ -105,7 +105,7 @@ class MpesaService {
 
       return responseData
     } catch (error) {
-      console.error("STK Push Error:", error)
+      // console.error("STK Push Error:", error)
       throw error
     }
   }
@@ -133,11 +133,11 @@ class MpesaService {
       })
 
       const responseData = await response.json()
-      console.log("STK Query Response:", JSON.stringify(responseData, null, 2))
+      // console.log("STK Query Response:", JSON.stringify(responseData, null, 2))
 
       return responseData
     } catch (error) {
-      console.error("STK Query Error:", error)
+      // console.error("STK Query Error:", error)
       throw error
     }
   }

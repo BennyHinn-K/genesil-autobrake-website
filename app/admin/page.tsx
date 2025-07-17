@@ -1,6 +1,8 @@
 "use client"
 
-import type React from "react"
+/// <reference types="react" />
+
+import * as React from "react"
 
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Shield, LogOut } from "lucide-react"
 import ProductManager from "./components/ProductManager"
+import Image from "next/image"
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -112,7 +115,7 @@ export default function AdminPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center gap-4">
-              <img src="/images/genesil-logo.png" alt="Genesil" className="h-10 w-10" />
+              <Image src="/images/genesil-logo.png" alt="Genesil" className="h-10 w-10" width={40} height={40} />
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
                 <p className="text-sm text-gray-600">Genesil Autospares Management System</p>

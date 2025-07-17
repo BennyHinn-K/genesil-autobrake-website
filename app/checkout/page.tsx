@@ -1,9 +1,12 @@
 "use client"
 
+/// <reference types="react" />
+
+import * as React from "react"
 import { useState } from "react"
 import { Alert, AlertCircle, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
@@ -12,11 +15,10 @@ import { Phone, MessageCircle, CheckCircle, Clock } from "lucide-react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import Image from "next/image"
 
 const paymentSchema = z.object({
-  paymentMethod: z.enum(["mpesa", "card", "call"], {
-    required_error: "You need to select a payment method.",
-  }),
+  paymentMethod: z.enum(["mpesa", "card", "call"]),
   phoneNumber: z.string().optional(),
   cardNumber: z.string().optional(),
   expiryDate: z.string().optional(),
@@ -35,7 +37,7 @@ const CheckoutPage = () => {
   })
 
   const onSubmit = async (values: z.infer<typeof paymentSchema>) => {
-    console.log(values)
+    // console.log(values)
 
     if (values.paymentMethod === "call") {
       // Handle call order - direct phone call
@@ -51,15 +53,15 @@ const CheckoutPage = () => {
 
       if (values.paymentMethod === "mpesa") {
         // Simulate M-Pesa STK push
-        console.log("Initiating M-Pesa payment for:", values.phoneNumber)
+        // console.log("Initiating M-Pesa payment for:", values.phoneNumber)
       } else if (values.paymentMethod === "card") {
         // Simulate card payment
-        console.log("Processing card payment")
+        // console.log("Processing card payment")
       }
 
       setPaymentSuccess(true)
     } catch (error) {
-      console.error("Payment failed:", error)
+      // console.error("Payment failed:", error)
     } finally {
       setIsProcessing(false)
     }
@@ -73,7 +75,7 @@ const CheckoutPage = () => {
   return (
     <div className="container py-10 max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <img src="/images/genesil-logo.png" alt="Genesil Autospares" className="w-16 h-16 mx-auto mb-4" width={64} height={64} />
+        <Image src="/images/genesil-logo.png" alt="Genesil Autospares" className="w-16 h-16 mx-auto mb-4" width={64} height={64} />
         <h1 className="text-3xl font-bold mb-2">Secure Checkout</h1>
         <p className="text-gray-600">
           Complete your order with Genesil Autospares - Kenya's trusted auto parts supplier
@@ -168,13 +170,13 @@ const CheckoutPage = () => {
                   name="paymentMethod"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel className="text-base font-semibold">Payment Method</FormLabel>
+                      <label htmlFor="paymentMethod" className="text-gray-700">Payment Method</label>
                       <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="space-y-3">
                         <FormItem className="flex items-center space-x-3 space-y-0 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                           <FormControl>
-                            <RadioGroupItem value="mpesa" id="mpesa" />
+                            <RadioGroupItem value="mpesa" />
                           </FormControl>
-                          <FormLabel htmlFor="mpesa" className="flex-1 cursor-pointer">
+                          <span className="flex-1 cursor-pointer">
                             <div className="flex items-center gap-3">
                               <div className="w-8 h-8 bg-green-600 rounded flex items-center justify-center">
                                 <span className="text-white text-xs font-bold">M</span>
@@ -184,14 +186,14 @@ const CheckoutPage = () => {
                                 <div className="text-sm text-gray-500">Secure mobile money payment</div>
                               </div>
                             </div>
-                          </FormLabel>
+                          </span>
                         </FormItem>
 
                         <FormItem className="flex items-center space-x-3 space-y-0 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                           <FormControl>
-                            <RadioGroupItem value="card" id="card" />
+                            <RadioGroupItem value="card" />
                           </FormControl>
-                          <FormLabel htmlFor="card" className="flex-1 cursor-pointer">
+                          <span className="flex-1 cursor-pointer">
                             <div className="flex items-center gap-3">
                               <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
                                 <span className="text-white text-xs font-bold">💳</span>
@@ -201,14 +203,14 @@ const CheckoutPage = () => {
                                 <div className="text-sm text-gray-500">Visa, Mastercard accepted</div>
                               </div>
                             </div>
-                          </FormLabel>
+                          </span>
                         </FormItem>
 
                         <FormItem className="flex items-center space-x-3 space-y-0 p-4 border-2 border-yellow-300 rounded-lg hover:bg-yellow-50 transition-colors bg-yellow-25">
                           <FormControl>
-                            <RadioGroupItem value="call" id="call" />
+                            <RadioGroupItem value="call" />
                           </FormControl>
-                          <FormLabel htmlFor="call" className="flex-1 cursor-pointer">
+                          <span className="flex-1 cursor-pointer">
                             <div className="flex items-center gap-3">
                               <div className="w-8 h-8 bg-yellow-500 rounded flex items-center justify-center">
                                 <Phone className="h-4 w-4 text-black" />
@@ -218,7 +220,7 @@ const CheckoutPage = () => {
                                 <div className="text-sm text-yellow-600">Speak with our parts experts directly</div>
                               </div>
                             </div>
-                          </FormLabel>
+                          </span>
                         </FormItem>
                       </RadioGroup>
                       <FormMessage />
@@ -241,11 +243,12 @@ const CheckoutPage = () => {
                       name="phoneNumber"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>M-Pesa Phone Number</FormLabel>
+                          <label htmlFor="phoneNumber" className="text-gray-700">M-Pesa Phone Number</label>
                           <FormControl>
                             <Input
                               placeholder="254XXXXXXXXX (e.g., 254722683434)"
                               {...field}
+                              id="phoneNumber"
                               className="focus:border-green-500 focus:ring-green-500"
                             />
                           </FormControl>
@@ -271,9 +274,9 @@ const CheckoutPage = () => {
                         name="cardNumber"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Card Number</FormLabel>
+                            <label htmlFor="cardNumber" className="text-gray-700">Card Number</label>
                             <FormControl>
-                              <Input placeholder="1234 5678 9012 3456" {...field} />
+                              <Input placeholder="1234 5678 9012 3456" {...field} id="cardNumber" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -285,9 +288,9 @@ const CheckoutPage = () => {
                           name="expiryDate"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Expiry Date</FormLabel>
+                              <label htmlFor="expiryDate" className="text-gray-700">Expiry Date</label>
                               <FormControl>
-                                <Input placeholder="MM/YY" {...field} />
+                                <Input placeholder="MM/YY" {...field} id="expiryDate" />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -298,9 +301,9 @@ const CheckoutPage = () => {
                           name="cvv"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>CVV</FormLabel>
+                              <label htmlFor="cvv" className="text-gray-700">CVV</label>
                               <FormControl>
-                                <Input placeholder="123" {...field} />
+                                <Input placeholder="123" {...field} id="cvv" />
                               </FormControl>
                               <FormMessage />
                             </FormItem>

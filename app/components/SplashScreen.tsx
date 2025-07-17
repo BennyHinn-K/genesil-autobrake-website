@@ -1,6 +1,8 @@
-"use client"
+/// <reference types="react" />
 
+import * as React from "react"
 import { useEffect, useState } from "react"
+import Image from "next/image"
 
 export default function SplashScreen() {
   const [fadeOut, setFadeOut] = useState(false)
@@ -36,7 +38,7 @@ export default function SplashScreen() {
     >
       {/* Genesil Logo - Centered */}
       <div className="mb-8">
-        <img src="/images/genesil-splash-logo.png" alt="Genesil Autospares" className="w-80 h-auto drop-shadow-2xl" width={320} height={128} />
+        <Image src="/images/genesil-splash-logo.png" alt="Genesil Autospares" className="w-80 h-auto drop-shadow-2xl" width={320} height={128} />
       </div>
 
       {/* Loading Text - Just below logo */}

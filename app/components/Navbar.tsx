@@ -1,6 +1,6 @@
-"use client"
+/// <reference types="react" />
 
-import type React from "react"
+import * as React from "react"
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
@@ -16,6 +16,7 @@ import { Menu, ShoppingCart, User, Sun, Moon, LogOut, Shield, Eye, EyeOff } from
 import { useCart } from "../context/CartContext"
 import { useTheme } from "../context/ThemeContext"
 import { useAuth } from "../context/AuthContext"
+import Image from "next/image"
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -139,7 +140,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16">
             {/* Logo Section */}
             <Link href="/" className="flex items-center space-x-3 group">
-              <img
+              <Image
                 src="/images/genesil-logo.png"
                 alt="Genesil Autospares"
                 className="h-10 w-auto transition-transform group-hover:scale-105"
@@ -251,7 +252,7 @@ export default function Navbar() {
                 <SheetContent className="p-0 bg-white dark:bg-card w-80">
                   <div className="flex flex-col p-6 space-y-6">
                     <div className="flex items-center space-x-3 pb-4 border-b border-gray-200 dark:border-gray-700">
-                      <img src="/images/genesil-logo.png" alt="Genesil" className="h-8 w-auto" width={96} height={32} />
+                      <Image src="/images/genesil-logo.png" alt="Genesil" className="h-8 w-auto" width={96} height={32} />
                       <div>
                         <h2 className="font-bold text-gray-900 dark:text-foreground">GENESIL</h2>
                         <p className="text-xs text-gray-600 dark:text-muted-foreground">AUTOBRAKE</p>
@@ -307,22 +308,15 @@ export default function Navbar() {
       <Dialog open={showAdminDialog} onOpenChange={setShowAdminDialog}>
         <DialogContent className="sm:max-w-md bg-white dark:bg-card border-2 border-yellow-200 dark:border-yellow-800">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-3 text-xl">
-              <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
-                <Shield className="h-6 w-6 text-yellow-600" />
-              </div>
-              Admin Access
-            </DialogTitle>
-            <DialogDescription className="text-gray-600 dark:text-gray-400">
-              Enter the admin password to access the dashboard
-            </DialogDescription>
+            <h2 className="text-lg font-semibold leading-none tracking-tight">Admin Access</h2>
+            <p className="text-sm text-muted-foreground">Enter the admin password to access the dashboard</p>
           </DialogHeader>
 
           <form onSubmit={handleAdminLogin} className="space-y-6 pt-4">
             <div className="space-y-3">
-              <Label htmlFor="admin-password" className="text-sm font-medium">
+              <label htmlFor="admin-password" className="text-sm font-medium">
                 Admin Password
-              </Label>
+              </label>
               <div className="relative">
                 <Input
                   id="admin-password"
